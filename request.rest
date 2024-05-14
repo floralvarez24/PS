@@ -1,0 +1,11 @@
+//Crear usurio 
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+    "mail": "lihuen@gmail.com",
+    "contraseña": "123456",
+    "confContraseña": "123456",
+    "rol": "1"
+}
+
