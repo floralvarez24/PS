@@ -2,12 +2,27 @@ import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 import argon2 from "argon2";
 
-export const getUsers = async(req, res) => {
+/*export const getUsers = async(req, res) => {
     try {
         const response = await db.query('SELECT mail, rol FROM usuario');
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json({msg: error.message});
+    }
+}*/
+
+export const getUsers = async (req, res) => {
+    try {
+        const response = await db.query('SELECT DISTINCT mail, rol FROM usuario');
+        const uniqueUsers = new Set();
+
+        response.forEach(user => {
+            uniqueUsers.add(user);
+        });
+
+        res.status(200).json(Array.from(uniqueUsers));
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
     }
 }
 
@@ -123,11 +138,10 @@ export const deleteUsers = async (req, res) => {
 
     try {
         // Verifica si el usuario existe buscando por id
-        const queryCheckUser = `
-            SELECT *
+        const queryCheckUser = 
+        `   SELECT *
             FROM usuario
-            WHERE idUsuario = ?
-        `;
+            WHERE idUsuario = ? `;
 
         const [user] = await db.query(queryCheckUser, {
             replacements: [id],
