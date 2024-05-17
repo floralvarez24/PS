@@ -2,14 +2,6 @@ import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 import argon2 from "argon2";
 
-/*export const getUsers = async(req, res) => {
-    try {
-        const response = await db.query('SELECT mail, rol FROM usuario');
-        res.status(200).json(response);
-    } catch (error) {
-        res.status(500).json({msg: error.message});
-    }
-}*/
 
 export const getUsers = async (req, res) => {
     try {

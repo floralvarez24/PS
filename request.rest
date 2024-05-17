@@ -60,3 +60,15 @@ GET http://localhost:5000/me
 
 ###
 DELETE  http://localhost:5000/logout
+
+###
+//Crear flete
+POST http://localhost:5000/crear-flete 
+Content-Type: application/json
+
+{
+    "razonSocial": "PruebaRazonSocial",
+    "obra": "PruebaObra",
+    "descripcion": "DescripcionPruebaVehiculo",
+    " nombreApellido": "Nombre y apellido prueba Conductor" 
+}
