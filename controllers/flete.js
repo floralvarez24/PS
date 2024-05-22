@@ -10,7 +10,7 @@ export const getFleteId = async (req, res) => {
 
 export const createFleteWithDocuments = async (req, res) => {
     const { 
-        fechaFlete, razonSocial, obra, condicionContrato_DOC, contactoMail, contactoTel, rut, direccion, departamento, 
+        razonSocial, obra, condicionContrato_DOC, contactoMail, contactoTel, rut, direccion, departamento, 
         constInscripcionDGI_DOC, constInscripcionBPS_DOC, certDGI_DOC, certDGI_FECHAVENCIMIENTO, certDGI_VENCIDO, 
         certComunBPS_DOC, certComunBPS_FECHAVENCIMIENTO, certComunBPS_VENCIDO, segAccidenteTrab_DOC, 
         segAccidenteTrab_FECHAVENCIMIENTO, segAccidenteTrab_VENCIDO, planillaTrab_DOC, planillaTrab_FECHAEMISION,
@@ -20,22 +20,21 @@ export const createFleteWithDocuments = async (req, res) => {
         carnetSalud_FECHAVENCIMIENTO, carnetSalud_VENCIDO, licenciaConducir_DOC, licenciaConducir_FECHAVENCIMIENTO, 
         licenciaConducir_VENCIDO, altaBPS
     } = req.body;
-
+    
+    
     const { userId } = req;
-
+    
     try {
         // Iniciar una transacción
         await db.transaction(async (t) => {
             // Crear el flete
-            const [resultFlete] = await db.query(`
-                INSERT INTO fletero (idUsuario_Flete, fechaFlete)
-                VALUES (?, ?)
+            const [idFletero] = await db.query(`
+                INSERT INTO fletero (idUsuario_Flete)
+                VALUES (?)
             `, {
-                replacements: [userId, fechaFlete],
+                replacements: [userId],
                 transaction: t
             });
-
-            const idFletero = resultFlete.insertId; // Obtener el ID del nuevo flete
 
             // Crear el documento relacionado con el flete
             await db.query(`
@@ -44,7 +43,7 @@ export const createFleteWithDocuments = async (req, res) => {
                     constInscripcionDGI_DOC, constInscripcionBPS_DOC, certDGI_DOC, certDGI_FECHAVENCIMIENTO, certDGI_VENCIDO,
                     certComunBPS_DOC, certComunBPS_FECHAVENCIMIENTO, certComunBPS_VENCIDO, segAccidenteTrab_DOC,
                     segAccidenteTrab_FECHAVENCIMIENTO, segAccidenteTrab_VENCIDO, planillaTrab_DOC, planillaTrab_FECHAEMISION
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `, {
                 replacements: [
                     idFletero, razonSocial || null, obra || null, condicionContrato_DOC || null, contactoMail || null, contactoTel || null, 
@@ -57,26 +56,20 @@ export const createFleteWithDocuments = async (req, res) => {
                 transaction: t
             });
 
-            // Obtener el ID del documento empresa flete
-            const idDocEmpresaFlete = resultFlete.insertId; 
-
             // Crear el documento relacionado con el vehículo
-            const [resultVehiculo] =  await db.query(`
-                INSERT INTO documentoVehiculo (
-                    idFlete_Vehiculo, descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO,
-                    applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC, soa_FECHAVENCIMIENTO, soa_VENCIDO
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `, {
-                replacements: [
-                    idDocEmpresaFlete, descripcion || null, libretaCirculacion_DOC || null, cedulaMTOP_DOC || null, 
-                    cedulaMTOP_FECHAVENCIMIENTO || null, cedulaMTOP_VENCIDO || null, applus_DOC || null, 
-                    applus_FECHAVENCIMIENTO || null, applus_VENCIDO || null, aplus_PRORROGA || null,aplus_PRORROGAVENCIDA || null, soa_DOC || null, soa_FECHAVENCIMIENTO || null, soa_VENCIDO || null
-                ],
-                transaction: t
-            });
-
-            // Obtener el ID del documento vehículo
-            const idVehiculo = resultVehiculo.insertId; 
+            const [idVehiculo] = await db.query(`
+            INSERT INTO documentoVehiculo (
+                idFlete_Vehiculo, descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO,
+                applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC, soa_FECHAVENCIMIENTO, soa_VENCIDO
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, {
+            replacements: [
+                idFletero, descripcion || null, libretaCirculacion_DOC || null, cedulaMTOP_DOC || null, 
+                cedulaMTOP_FECHAVENCIMIENTO || null, cedulaMTOP_VENCIDO || null, applus_DOC || null, 
+                applus_FECHAVENCIMIENTO || null, applus_VENCIDO || null, aplus_PRORROGA || null,aplus_PRORROGAVENCIDA || null, soa_DOC || null, soa_FECHAVENCIMIENTO || null, soa_VENCIDO || null
+            ],
+            transaction: t
+        });
 
             // Crear el documento relacionado con el conductor
             await db.query(`

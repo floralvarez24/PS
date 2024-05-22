@@ -70,5 +70,5 @@ Content-Type: application/json
     "razonSocial": "PruebaRazonSocial",
     "obra": "PruebaObra",
     "descripcion": "DescripcionPruebaVehiculo",
-    " nombreApellido": "Nombre y apellido prueba Conductor" 
+    "nombreApellido": "Nombre y apellido prueba Conductor" 
 }

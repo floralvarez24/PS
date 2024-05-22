@@ -1,5 +1,6 @@
 import db from "../config/Database.js";
 
+
 export const verifyUser = async (req, res, next) => {
     try {
         // Verificar si hay un userId en la sesión
@@ -7,7 +8,7 @@ export const verifyUser = async (req, res, next) => {
             return res.status(401).json({ msg: "Por favor inicia sesión en tu cuenta." });
         }
 
-        // Consulta SQL para obtener el usuario por su uuid desde la base de datos
+        // Consulta SQL para obtener el usuario por su id desde la base de datos
         const query = `
             SELECT idUsuario, rol
             FROM usuario

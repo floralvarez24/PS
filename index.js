@@ -3,7 +3,7 @@ import cors from "cors";
 import session from "express-session";
 import dotenv from "dotenv";
 import db from "./config/Database.js";
-import  SequelizeStore  from "connect-session-sequelize";
+import SequelizeStore  from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import FleteRoute from './routes/FleteRoute.js';
