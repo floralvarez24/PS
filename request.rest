@@ -61,6 +61,15 @@ GET http://localhost:5000/me
 ###
 DELETE  http://localhost:5000/logout
 
+
+###
+//Pedir flete
+GET http://localhost:5000/pedir-flete 
+
+###
+//Pedir flete por id
+GET http://localhost:5000/pedir-flete/12
+
 ###
 //Crear flete
 POST http://localhost:5000/crear-flete 
@@ -72,3 +81,19 @@ Content-Type: application/json
     "descripcion": "DescripcionPruebaVehiculo",
     "nombreApellido": "Nombre y apellido prueba Conductor" 
 }
+
+###
+//Modificar flete por id
+PATCH  http://localhost:5000/modificar-flete/12
+Content-Type: application/json
+
+{
+    "razonSocial": "PruebaRazonSocialMODIFICADO",
+    "obra": "PruebaObraMODIFICADO",
+    "descripcion": "DescripcionPruebaVehiculoMODIFICADO",
+    "nombreApellido": "Nombre y apellido prueba ConductorMODIFICADO" 
+}
+
+###
+//Eliminar flete por ID
+DELETE  http://localhost:5000/elimianr-flete/12
