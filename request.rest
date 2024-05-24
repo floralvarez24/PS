@@ -47,6 +47,7 @@ Content-Type: application/json
 }
 
 ###
+//Iniciar sesión
 POST http://localhost:5000/login
 Content-Type: application/json
 
@@ -56,19 +57,28 @@ Content-Type: application/json
 }
 
 ###
+//Pedir usuario logueado
 GET http://localhost:5000/me
 
 ###
+//Cerrar sesión
 DELETE  http://localhost:5000/logout
-
 
 ###
 //Pedir flete
 GET http://localhost:5000/pedir-flete 
 
 ###
-//Pedir flete por id
-GET http://localhost:5000/pedir-flete/12
+//Pedir flete del usuario logueado
+GET http://localhost:5000/pedir-flete-User
+
+###
+//Pedir flete por razon social
+GET http://localhost:5000/pedir-flete/PruebaRazonSocial
+
+###
+//Pedir flete por obra
+GET http://localhost:5000/pedir-flete1/PruebaObra2
 
 ###
 //Crear flete
@@ -76,10 +86,10 @@ POST http://localhost:5000/crear-flete
 Content-Type: application/json
 
 {
-    "razonSocial": "PruebaRazonSocial",
-    "obra": "PruebaObra",
-    "descripcion": "DescripcionPruebaVehiculo",
-    "nombreApellido": "Nombre y apellido prueba Conductor" 
+    "razonSocial": "PruebaRazonSocial3",
+    "obra": "PruebaObra3",
+    "descripcion": "DescripcionPruebaVehiculo3",
+    "nombreApellido": "Nombre y apellido prueba Conductor3" 
 }
 
 ###
@@ -96,4 +106,52 @@ Content-Type: application/json
 
 ###
 //Eliminar flete por ID
-DELETE  http://localhost:5000/elimianr-flete/12
+DELETE  http://localhost:5000/eliminar-flete/15
+
+
+
+###
+//Pedir subContrato
+GET http://localhost:5000/pedir-subContrato 
+
+###
+//Pedir subContrato del usuario logueado
+GET http://localhost:5000/pedir-subContrato-user 
+
+###
+//Pedir subContrato razon social
+GET http://localhost:5000/pedir-subContrato/PruebaRazonSocialSUB2
+
+###
+//Pedir subContrato obra
+GET http://localhost:5000/pedir1-subContrato/PruebaObraSUB2
+
+
+###
+//Crear subContrato
+POST http://localhost:5000/crear-subContrato
+Content-Type: application/json
+
+{
+    "razonSocial": "PruebaRazonSocialSUB2",
+    "obra": "PruebaObraSUB2",
+    "nomYapell": "Nombre y apellido prueba ConductorSUB2",
+    "libretaCirculacion": "LibretaCirculacionSUB2",
+    "direccion": "DireccionSUB2"
+}
+
+###
+//Modificar sub contrato por id
+PATCH  http://localhost:5000/modificar-subContrato/1
+Content-Type: application/json
+
+{
+    "razonSocial": "PruebaRazonSocialMODIFICADO",
+    "obra": "PruebaObraMODIFICADO",
+    "nomYapell": "Nombre y apellido prueba ConductorMODIFICADO",
+    "direccion": "DireccionMODIFICADO"
+}
+
+###
+//Eliminar subcontrato por ID
+DELETE  http://localhost:5000/eliminar-subContrato/2
