@@ -1,0 +1,5 @@
+/* Estilo para el texto del placeholder */
+.custom-input::placeholder {
+    color: #9aa0ac; /* Cambia este color según tus necesidades */
+    opacity: 1; /* Asegúrate de que el placeholder sea completamente opaco */
+  }
