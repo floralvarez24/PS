@@ -1,35 +1,35 @@
 //Crear usuario 
-POST http://localhost:5000/users
+POST http://localhost:3001/users
 Content-Type: application/json
 
 {
-    "mail": "flor@gmail.com",
-    "contraseña": "1234567",
-    "confContraseña": "1234567",
+    "mail": "lihuen@gmail.com",
+    "contraseña": "Lihuen1",
+    "confContraseña": "Lihuen1",
     "rol": "2"
 }
 
 ###
 //Pedir todos los usuarios
-GET http://localhost:5000/users
+GET http://localhost:3001/users
 
 ###
 //Pedir todos los usuarios con id 
-GET http://localhost:5000/users/1
+GET http://localhost:3001/users/1
 
 ###
 //Pedir todos los usuarios con mail 
-GET http://localhost:5000/usersMail/florActualizado1@gmail.com
+GET http://localhost:3001/usersMail/florActualizado1@gmail.com
 
 ###
 //Modificar un usuario por ID
-PATCH  http://localhost:5000/users/1
+PATCH  http://localhost:3001/users/7
 Content-Type: application/json
 
 {
-    "mail": "florActualizado1@gmail.com",
-    "contraseña": "2",
-    "confContraseña": "2",
+    "mail": "lihuen@gmail.com",
+    "contraseña": "Lihuen1",
+    "confContraseña": "Lihuen1",
     "rol": "1"
 }
 ###
@@ -45,7 +45,15 @@ Content-Type: application/json
     "mail": "florActualizado1@gmail.com",
     "contraseña": "2"
 }
+###
+//Iniciar sesión
+POST http://localhost:3001/login
+Content-Type: application/json
 
+{
+    "mail": "lihuen@gmail.com",
+    "contraseña": "Lihuen1"
+}
 ###
 //Iniciar sesión
 POST http://localhost:3001/login
@@ -66,7 +74,7 @@ DELETE  http://localhost:3001/logout
 
 ###
 //Pedir flete
-GET http://localhost:5000/pedir-flete 
+GET http://localhost:3001/pedir-flete 
 
 ###
 //Pedir flete del usuario logueado

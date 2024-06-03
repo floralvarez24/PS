@@ -63,7 +63,7 @@ export const getUsersByMail = async (req, res) => {
     }
 };
 
-export const createUsers = async(req, res) => {
+/*export const createUsers = async(req, res) => {
   const {mail, contraseña, confContraseña, rol} = req.body;
   if(contraseña !== confContraseña) return res.status(400).json({msg: "La contraseña no coinciden"});
   const hashPassword = await argon2.hash(contraseña); 
@@ -80,7 +80,38 @@ export const createUsers = async(req, res) => {
   } catch (error) {
     res.status(400).json({msg: error.message});
   }
-}
+}*/
+
+export const createUsers = async (req, res) => {
+    const { mail, contraseña, confContraseña, rol } = req.body;
+
+    // Validación de la contraseña
+    if (contraseña !== confContraseña) {
+        return res.status(400).json({ msg: "Las contraseñas no coinciden" });
+    }
+
+    const contraseñaRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // Al menos 6 caracteres, una mayúscula y un número
+    if (!contraseñaRegex.test(contraseña)) {
+        return res.status(400).json({ msg: "La contraseña debe tener al menos 6 caracteres, contener al menos una letra mayúscula y un número." });
+    }
+
+    try {
+        const hashPassword = await argon2.hash(contraseña);
+
+        const query = `
+        INSERT INTO usuario (mail, contraseña,confContraseña, rol)
+        VALUES (?, ?, ?, ?)`;
+
+        await db.query(query, {
+            replacements: [mail, hashPassword, hashPassword, rol],
+            type: Sequelize.QueryTypes.INSERT
+        });
+
+        res.status(201).json({ msg: "Usuario registrado" });
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
+};
 
 export const updateUsers = async (req, res) => {
     const { id } = req.params;
@@ -98,7 +129,10 @@ export const updateUsers = async (req, res) => {
         if (rol == null || rol == "" || rol < 1 || rol > 2) {
             return res.status(401).json({ msg: "Rol incorrecto" });
         }
-
+        const contraseñaRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // Al menos 6 caracteres, una mayúscula y un número
+        if (!contraseñaRegex.test(contraseña)) {
+            return res.status(400).json({ msg: "La contraseña debe tener al menos 6 caracteres, contener al menos una letra mayúscula y un número." });
+        }
         let hashPassword = contraseña;
         if (contraseña && contraseña !== "") {
             hashPassword = await argon2.hash(contraseña);
