@@ -3,3 +3,9 @@
     color: #9aa0ac; /* Cambia este color según tus necesidades */
     opacity: 1; /* Asegúrate de que el placeholder sea completamente opaco */
   }
+
+  
+.custom-navbar:hover{
+    background-color: #f8f9fa !important;
+    color: #000 !important;
+}

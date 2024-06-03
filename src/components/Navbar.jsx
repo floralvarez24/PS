@@ -17,7 +17,7 @@ const logout = () => {
   return (
     <div><nav className="navbar is-fixed-top has-background-white" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
-        <NavLink to="/dashboard" className="navbar-item has-background-light">
+        <NavLink to="/dashboard" className="navbar-item has-background-white custom-navbar">
           <img 
           src={logo} 
           width="112" 
