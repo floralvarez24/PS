@@ -1,4 +1,4 @@
-//Crear usurio 
+//Crear usuario 
 POST http://localhost:5000/users
 Content-Type: application/json
 
@@ -48,7 +48,7 @@ Content-Type: application/json
 
 ###
 //Iniciar sesión
-POST http://localhost:5000/login
+POST http://localhost:3001/login
 Content-Type: application/json
 
 {
@@ -58,11 +58,11 @@ Content-Type: application/json
 
 ###
 //Pedir usuario logueado
-GET http://localhost:5000/me
+GET http://localhost:3001/me
 
 ###
 //Cerrar sesión
-DELETE  http://localhost:5000/logout
+DELETE  http://localhost:3001/logout
 
 ###
 //Pedir flete
