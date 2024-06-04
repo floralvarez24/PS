@@ -90,14 +90,14 @@ GET http://localhost:5000/pedir-flete1/PruebaObra2
 
 ###
 //Crear flete
-POST http://localhost:5000/crear-flete 
+POST http://localhost:3001/crear-flete 
 Content-Type: application/json
 
 {
-    "razonSocial": "PruebaRazonSocial3",
-    "obra": "PruebaObra3",
-    "descripcion": "DescripcionPruebaVehiculo3",
-    "nombreApellido": "Nombre y apellido prueba Conductor3" 
+    "razonSocial": "PruebaRazonSocialRol2",
+    "obra": "PruebaObraRol2",
+    "descripcion": "DescripcionPruebaVehiculoRol2",
+    "nombreApellido": "Nombre y apellido prueba ConductorRol2" 
 }
 
 ###
@@ -114,7 +114,7 @@ Content-Type: application/json
 
 ###
 //Eliminar flete por ID
-DELETE  http://localhost:5000/eliminar-flete/15
+DELETE  http://localhost:3001/eliminar-flete/15
 
 
 

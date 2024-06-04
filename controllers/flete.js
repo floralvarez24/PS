@@ -6,7 +6,7 @@ export const getFletesAdmin = async (req, res) => {
         // Consulta para obtener todos los fletes y sus documentos asociados
         const fletes = await db.query(`
         SELECT 
-        f.idFletero, f.idUsuario_Flete,
+        f.idFletero, f.idUsuario_Flete, f.fechaFlete,
         e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
         e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
         e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
@@ -39,7 +39,7 @@ export const getFletesByUser = async (req, res) => {
         // Define la consulta SQL
         const query = `
             SELECT 
-                f.idFletero, f.idUsuario_Flete,
+                f.idFletero, f.idUsuario_Flete, f.fechaFlete,
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
@@ -78,7 +78,7 @@ export const getFleteRazonSocial = async (req, res) => {
     try {
         const [results] = await db.query(`
             SELECT 
-                f.idFletero, f.idUsuario_Flete,
+                f.idFletero, f.idUsuario_Flete, f.fechaFlete,
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
@@ -115,7 +115,7 @@ export const getFleteObra = async (req, res) => {
     try {
         const [results] = await db.query(`
             SELECT 
-                f.idFletero, f.idUsuario_Flete,
+                f.idFletero, f.idUsuario_Flete, f.fechaFlete,
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
