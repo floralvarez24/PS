@@ -77,6 +77,10 @@ DELETE  http://localhost:3001/logout
 GET http://localhost:3001/pedir-flete 
 
 ###
+//Pedir flete por id
+GET http://localhost:3001/pedir-flete2/50 
+
+###
 //Pedir flete del usuario logueado
 GET http://localhost:5000/pedir-flete-User
 
@@ -86,7 +90,7 @@ GET http://localhost:5000/pedir-flete/PruebaRazonSocial
 
 ###
 //Pedir flete por obra
-GET http://localhost:5000/pedir-flete1/PruebaObra2
+GET http://localhost:3001/pedir-flete1/PruebaObra2
 
 ###
 //Crear flete
@@ -102,7 +106,7 @@ Content-Type: application/json
 
 ###
 //Modificar flete por id
-PATCH  http://localhost:5000/modificar-flete/12
+PATCH  http://localhost:3001/modificar-flete/60
 Content-Type: application/json
 
 {
