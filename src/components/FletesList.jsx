@@ -42,7 +42,7 @@ const FletesList = () => {
                             <td style={{color:"black", width: "auto"}}>{fletero.obra}</td>
                             <td style={{color:"black", width: "auto"}}>{fletero.fechaFlete}</td>
                             <td style={{color:"black", width: "auto"}}>
-                                <Link to={`/fletes/edit/:${fletero.idFletero}`} className='button is-info is-small'>Editar</Link>
+                                <Link to={`/fletes/edit/${fletero.idFletero}`} className='button is-info is-small'>Editar</Link>
                                 <button onClick={() => deleteFlete(fletero.idFletero)} className='button is-danger is-small'>Eliminar</button>
                             </td>
                         </tr>
