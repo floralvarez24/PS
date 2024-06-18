@@ -27,10 +27,10 @@ PATCH  http://localhost:3001/users/7
 Content-Type: application/json
 
 {
-    "mail": "lihuen@gmail.com",
+    "mail": "lihuenEditado@gmail.com",
     "contraseña": "Lihuen1",
     "confContraseña": "Lihuen1",
-    "rol": "1"
+    "rol": "2"
 }
 ###
 //Eliminar usuario por ID

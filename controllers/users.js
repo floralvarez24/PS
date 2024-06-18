@@ -5,20 +5,20 @@ import argon2 from "argon2";
 
 export const getUsers = async (req, res) => {
     try {
-        const response = await db.query('SELECT DISTINCT mail, rol FROM usuario');
+        const response = await db.query('SELECT DISTINCT mail, rol, idUsuario FROM usuario');
         const uniqueUsers = new Set();
 
         response.forEach(user => {
             uniqueUsers.add(user);
         });
 
-        res.status(200).json(Array.from(uniqueUsers));
+        res.status(200).json(Array.from(uniqueUsers).flat()); //elimina los niveles de anidación
     } catch (error) {
         res.status(500).json({ msg: error.message });
     }
 }
 
-export const getUsersByID =  async(req, res) => {
+/*export const getUsersByID =  async(req, res) => {
     const { id } = req.params; // Obtiene el parámetro de ruta "id" desde la solicitud
 
     try {
@@ -31,7 +31,26 @@ export const getUsersByID =  async(req, res) => {
     } catch (error) {
         res.status(500).json({msg: error.message});
     }
-}
+}*/
+export const getUsersByID = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [user] = await db.query('SELECT mail, rol FROM usuario WHERE idUsuario = ?', {
+            replacements: [id],
+            type: Sequelize.QueryTypes.SELECT
+        });
+
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
 
 
 export const getUsersByMail = async (req, res) => {
