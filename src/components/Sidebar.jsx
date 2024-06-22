@@ -23,7 +23,7 @@ const logout = () => {
     <p className="menu-label">General</p>
     <ul className="menu-list has-background-white">
       <li>  
-        <NavLink className="has-background-white has-text-black" to={"/dashboard"}> <IoHome/> Dashboard</NavLink> 
+        <NavLink className="has-background-white has-text-black" to={"/dashboard"}> <IoHome/> Inicio</NavLink> 
         </li>
       <li>
       <NavLink className="has-background-white has-text-black"to={"/fletes"}> <IoCarSharp/> Fletes</NavLink>

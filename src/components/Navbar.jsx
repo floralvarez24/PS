@@ -1,6 +1,8 @@
 import React from 'react'
 import {NavLink, useNavigate} from "react-router-dom";
 import logo from '../logoAdmin.png';
+import logoUsuario from '../usuario.png';
+
 import {useDispatch, useSelector} from 'react-redux';
 import { LogOut, reset } from '../features/authSlice';
 const Navbar = () => {
@@ -18,12 +20,20 @@ const logout = () => {
     <div><nav className="navbar is-fixed-top has-background-white" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
         <NavLink to="/dashboard" className="navbar-item has-background-white custom-navbar">
+        {user && user.rol === '1' && (
           <img 
           src={logo} 
           width="112" 
           height="28"
           alt='logo'
-          />
+          /> )}
+          {user && user.rol === '2' && (
+          <img  
+          src={logoUsuario}
+          width="112"
+          height="28"
+          alt='logo'
+          /> )}
         </NavLink>
     
         <a href='!#' role="button" className="navbar-burger burger " aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
