@@ -18,20 +18,7 @@ export const getUsers = async (req, res) => {
     }
 }
 
-/*export const getUsersByID =  async(req, res) => {
-    const { id } = req.params; // Obtiene el parámetro de ruta "id" desde la solicitud
 
-    try {
-        // Ejecuta una consulta SQL para obtener el usuario por su ID
-        const response = await db.query('SELECT mail, rol FROM usuario WHERE idUsuario = ?', {
-            replacements: [id],
-            type: Sequelize.QueryTypes.SELECT
-        });
-        res.status(200).json(response);
-    } catch (error) {
-        res.status(500).json({msg: error.message});
-    }
-}*/
 export const getUsersByID = async (req, res) => {
     const { id } = req.params;
 
@@ -82,24 +69,7 @@ export const getUsersByMail = async (req, res) => {
     }
 };
 
-/*export const createUsers = async(req, res) => {
-  const {mail, contraseña, confContraseña, rol} = req.body;
-  if(contraseña !== confContraseña) return res.status(400).json({msg: "La contraseña no coinciden"});
-  const hashPassword = await argon2.hash(contraseña); 
-  try {
-    const query = `
-    INSERT INTO usuario (mail, contraseña, rol)
-    VALUES (?, ?, ?)`;
 
-    await db.query(query, {
-    replacements: [mail, hashPassword, rol],
-    type: Sequelize.QueryTypes.INSERT
-    });
-    res.status(201).json({msg: "Usuario registrado"});
-  } catch (error) {
-    res.status(400).json({msg: error.message});
-  }
-}*/
 
 export const createUsers = async (req, res) => {
     const { mail, contraseña, confContraseña, rol } = req.body;
@@ -115,10 +85,20 @@ export const createUsers = async (req, res) => {
     }
 
     try {
+        // Verificar si el correo electrónico ya existe
+        const [existingUser] = await db.query('SELECT idUsuario FROM usuario WHERE mail = ?', {
+            replacements: [mail],
+            type: Sequelize.QueryTypes.SELECT
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ msg: "El correo electrónico ya está en uso" });
+        }
+
         const hashPassword = await argon2.hash(contraseña);
 
         const query = `
-        INSERT INTO usuario (mail, contraseña,confContraseña, rol)
+        INSERT INTO usuario (mail, contraseña, confContraseña, rol)
         VALUES (?, ?, ?, ?)`;
 
         await db.query(query, {
@@ -131,7 +111,6 @@ export const createUsers = async (req, res) => {
         res.status(400).json({ msg: error.message });
     }
 };
-
 export const updateUsers = async (req, res) => {
     const { id } = req.params;
     const { mail, contraseña, confContraseña, rol } = req.body;
@@ -141,29 +120,41 @@ export const updateUsers = async (req, res) => {
             return res.status(400).json({ msg: "La contraseña y la confirmación de contraseña no coinciden" });
         }
 
-        if (mail == null ||mail == "" ) {
+        if (mail == null || mail == "" ) {
             return res.status(401).json({ msg: "El mail es un campo obligatorio" });
         }
 
         if (rol == null || rol == "" || rol < 1 || rol > 2) {
             return res.status(401).json({ msg: "Rol incorrecto" });
         }
+        
         const contraseñaRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // Al menos 6 caracteres, una mayúscula y un número
         if (!contraseñaRegex.test(contraseña)) {
             return res.status(400).json({ msg: "La contraseña debe tener al menos 6 caracteres, contener al menos una letra mayúscula y un número." });
         }
+        
         let hashPassword = contraseña;
         if (contraseña && contraseña !== "") {
             hashPassword = await argon2.hash(contraseña);
         }
 
-        const user = await db.query('SELECT * FROM usuario WHERE idUsuario = ?', {
+        const [user] = await db.query('SELECT * FROM usuario WHERE idUsuario = ?', {
             replacements: [id],
             type: db.QueryTypes.SELECT
         });
 
-        if (!user || user.length === 0) {
+        if (!user) {
             return res.status(404).json({ msg: `Usuario con ID ${id} no encontrado` });
+        }
+
+        // Verificar si el nuevo correo electrónico ya está en uso por otro usuario
+        const [existingUser] = await db.query('SELECT idUsuario FROM usuario WHERE mail = ? AND idUsuario != ?', {
+            replacements: [mail, id],
+            type: Sequelize.QueryTypes.SELECT
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ msg: "El correo electrónico ya está en uso por otro usuario" });
         }
 
         // Actualizar el usuario usando el método update() de Sequelize
@@ -183,10 +174,11 @@ export const deleteUsers = async (req, res) => {
 
     try {
         // Verifica si el usuario existe buscando por id
-        const queryCheckUser = 
-        `   SELECT *
+        const queryCheckUser = `
+            SELECT *
             FROM usuario
-            WHERE idUsuario = ? `;
+            WHERE idUsuario = ?
+        `;
 
         const [user] = await db.query(queryCheckUser, {
             replacements: [id],
@@ -197,9 +189,70 @@ export const deleteUsers = async (req, res) => {
             return res.status(404).json({ msg: "Usuario no encontrado" });
         }
 
-        // Ejecuta una consulta SQL para eliminar el usuario por su ID
+        // Antes de eliminar el usuario, elimina los registros dependientes en documentoempresaflete
+        const queryDeleteDependentDocumentos = `
+            DELETE FROM documentoempresaflete
+            WHERE idFletero_DocEmpresa IN (
+                SELECT idFletero_DocEmpresa
+                FROM fletero
+                WHERE idUsuario_Flete = ?
+            )
+        `;
+
+        await db.query(queryDeleteDependentDocumentos, {
+            replacements: [id],
+            type: db.QueryTypes.DELETE
+        });
+
+
+        // Antes de eliminar el usuario, elimina los registros dependientes en documentoconductor
+        const queryDeleteDependentDocumentosConductor = `
+            DELETE FROM documentoconductor
+            WHERE idDocVehiculoFlete_Conductor IN (
+                SELECT idDocVehiculoFlete_Conductor
+                FROM documentovehiculo
+                WHERE idFlete_Vehiculo IN (
+                    SELECT idFlete_Vehiculo
+                    FROM fletero
+                    WHERE idUsuario_Flete = ?
+                )
+            )
+        `;
+
+        await db.query(queryDeleteDependentDocumentosConductor, {
+            replacements: [id],
+            type: db.QueryTypes.DELETE
+        });
+
+        // Eliminar los registros dependientes en documentovehiculo
+        const queryDeleteDependentDocumentosVehiculo = `
+            DELETE FROM documentovehiculo
+            WHERE idFlete_Vehiculo IN (
+                SELECT idFlete_Vehiculo
+                FROM fletero
+                WHERE idUsuario_Flete = ?
+            )
+        `;
+
+        await db.query(queryDeleteDependentDocumentosVehiculo, {
+            replacements: [id],
+            type: db.QueryTypes.DELETE
+        });
+
+        // Luego elimina los registros en fletero
+        const queryDeleteDependentFletero = `
+            DELETE FROM fletero
+            WHERE idUsuario_Flete = ?
+        `;
+
+        await db.query(queryDeleteDependentFletero, {
+            replacements: [id],
+            type: db.QueryTypes.DELETE
+        });
+
+        // Finalmente, elimina el usuario
         const queryDeleteUser = `
-            DELETE  FROM usuario
+            DELETE FROM usuario
             WHERE idUsuario = ?
         `;
 
@@ -210,7 +263,6 @@ export const deleteUsers = async (req, res) => {
 
         res.status(200).json({ msg: "Usuario eliminado" });
     } catch (error) {
-        // Maneja cualquier error que ocurra durante la consulta SQL
         res.status(400).json({ msg: error.message });
     }
 };

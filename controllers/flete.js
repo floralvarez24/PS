@@ -1,7 +1,7 @@
 import db from "../config/Database.js";
 
 
-export const getFletesAdmin = async (req, res) => {
+/*export const getFletesAdmin = async (req, res) => {
     try {
         // Consulta para obtener todos los fletes y sus documentos asociados
         const fletes = await db.query(`
@@ -16,7 +16,7 @@ export const getFletesAdmin = async (req, res) => {
         v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
         c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
         c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
-    FROM 
+        FROM 
         fletero f
         JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
         JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
@@ -25,12 +25,19 @@ export const getFletesAdmin = async (req, res) => {
             type: db.QueryTypes.SELECT
         });
 
+        if (!fletes || fletes.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron fletes.' });
+        }
+
         // Devolver los fletes y documentos en la respuesta
         res.status(200).json(fletes);
     } catch (error) {
+        console.error('Error al obtener fletes:', error);
         res.status(500).json({ msg: error.message });
     }
 };
+
+
 
 export const getFletesByUser = async (req, res) => {
     const { userId } = req;
@@ -70,7 +77,85 @@ export const getFletesByUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ msg: error.message });
     }
+};*/
+// Importa tu db y otras dependencias necesarias
+
+// Método para obtener todos los fletes (para rol 1)
+export const getFletesAdmin = async (req, res) => {
+    try {
+        const fletes = await db.query(`
+            SELECT 
+                f.idFletero, f.idUsuario_Flete, f.fechaFlete,
+                e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
+                e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
+                e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
+                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
+                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
+                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
+                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
+                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+            FROM 
+                fletero f
+                JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
+                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
+                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor;
+        `, {
+            type: db.QueryTypes.SELECT
+        });
+
+        if (!fletes || fletes.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron fletes.' });
+        }
+
+        res.status(200).json(fletes);
+    } catch (error) {
+        console.error('Error al obtener fletes:', error);
+        res.status(500).json({ msg: error.message });
+    }
 };
+
+// Método para obtener fletes por usuario (para rol 2)
+export const getFletesByUser = async (req, res) => {
+    const { userId } = req;
+
+    try {
+        const query = `
+            SELECT 
+                f.idFletero, f.idUsuario_Flete, f.fechaFlete,
+                e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
+                e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
+                e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
+                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
+                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
+                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
+                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
+                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+            FROM 
+                fletero f
+                JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
+                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
+                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor
+            WHERE 
+                f.idUsuario_Flete = ?;
+        `;
+
+        const [results] = await db.query(query, {
+            replacements: [userId]
+        });
+
+        if (!results || results.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron fletes para este usuario.' });
+        }
+
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error al obtener fletes por usuario:', error);
+        res.status(500).json({ msg: error.message });
+    }
+};
+
 export const getFleteById = async (req, res) => {
     const { idFletero} = req.params;
     
@@ -266,6 +351,8 @@ export const createFleteWithDocuments = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 };
+
+
 
 export const updateFlete = async (req, res) => {
     const { idFletero } = req.params;

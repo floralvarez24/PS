@@ -41,6 +41,8 @@ app.use(SubContratoRoute);
 
 //store.sync();
 
+
+
 app.listen(process.env.APP_PORT, ()=> {
     console.log('Servidor en funcionamiento...');
 });
