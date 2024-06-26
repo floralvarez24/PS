@@ -7,7 +7,9 @@ import {
     createFleteWithDocuments,
     updateFlete,
     deleteFlete,
-    getFleteById
+    getFleteById,
+    deleteVehiculo,
+    addVehicleToFlete
 } from "../controllers/flete.js";
 import { verifyUser } from "../middleware/AuthUser.js";
 
@@ -21,5 +23,8 @@ router.get('/pedir-flete2/:idFletero',verifyUser, getFleteById);
 router.post('/crear-flete', verifyUser, createFleteWithDocuments);
 router.patch('/modificar-flete/:idFletero', verifyUser, updateFlete);
 router.delete('/eliminar-flete/:idFletero',verifyUser, deleteFlete);
+router.delete('/eliminar-vehiculo/:idVehiculoFlete',verifyUser, deleteVehiculo);
+router.post('/flete/:idFletero/vehiculo', verifyUser, addVehicleToFlete);
+
 
 export default router;

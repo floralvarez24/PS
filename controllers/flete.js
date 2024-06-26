@@ -1,84 +1,6 @@
 import db from "../config/Database.js";
+import { QueryTypes } from 'sequelize';
 
-
-/*export const getFletesAdmin = async (req, res) => {
-    try {
-        // Consulta para obtener todos los fletes y sus documentos asociados
-        const fletes = await db.query(`
-        SELECT 
-        f.idFletero, f.idUsuario_Flete, f.fechaFlete,
-        e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
-        e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
-        e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-        e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-        v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-        v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-        v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-        c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-        c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
-        FROM 
-        fletero f
-        JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-        JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-        JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor;
-        `, {
-            type: db.QueryTypes.SELECT
-        });
-
-        if (!fletes || fletes.length === 0) {
-            return res.status(404).json({ msg: 'No se encontraron fletes.' });
-        }
-
-        // Devolver los fletes y documentos en la respuesta
-        res.status(200).json(fletes);
-    } catch (error) {
-        console.error('Error al obtener fletes:', error);
-        res.status(500).json({ msg: error.message });
-    }
-};
-
-
-
-export const getFletesByUser = async (req, res) => {
-    const { userId } = req;
-
-    try {
-        // Define la consulta SQL
-        const query = `
-            SELECT 
-                f.idFletero, f.idUsuario_Flete, f.fechaFlete,
-                e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
-                e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
-                e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
-            FROM 
-                fletero f
-                JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor
-            WHERE 
-                f.idUsuario_Flete = ?;
-        `;
-
-        const [results] = await db.query(query, {
-            replacements: [userId]
-        });
-
-        if (results.length === 0) {
-            return res.status(404).json({ msg: 'No se encontraron fletes' });
-        }
-
-        res.json(results);
-    } catch (error) {
-        res.status(500).json({ msg: error.message });
-    }
-};*/
-// Importa tu db y otras dependencias necesarias
 
 // Método para obtener todos los fletes (para rol 1)
 export const getFletesAdmin = async (req, res) => {
@@ -89,17 +11,11 @@ export const getFletesAdmin = async (req, res) => {
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION
+                
             FROM 
                 fletero f
                 JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor;
         `, {
             type: db.QueryTypes.SELECT
         });
@@ -126,17 +42,11 @@ export const getFletesByUser = async (req, res) => {
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION
+
             FROM 
                 fletero f
                 JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor
             WHERE 
                 f.idUsuario_Flete = ?;
         `;
@@ -166,17 +76,10 @@ export const getFleteById = async (req, res) => {
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION
             FROM 
                 fletero f
                 JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor
             WHERE 
                  f.idFletero = ?;
         `, {
@@ -202,17 +105,11 @@ export const getFleteRazonSocial = async (req, res) => {
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION
+
             FROM 
                 fletero f
                 JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor
             WHERE 
                  e.razonSocial = ?;
         `, {
@@ -239,17 +136,11 @@ export const getFleteObra = async (req, res) => {
                 e.razonSocial, e.obra, e.condicionContrato_DOC, e.contactoMail, e.contactoTel, e.rut, e.direccion, e.departamento,
                 e.constInscripcionDGI_DOC, e.constInscripcionBPS_DOC, e.certDGI_DOC, e.certDGI_FECHAVENCIMIENTO, e.certDGI_VENCIDO,
                 e.certComunBPS_DOC, e.certComunBPS_FECHAVENCIMIENTO, e.certComunBPS_VENCIDO, e.segAccidenteTrab_DOC,
-                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION,
-                v.descripcion, v.libretaCirculacion_DOC, v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
-                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, v.aplus_PRORROGAVENCIDA,
-                v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO,
-                c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO,
-                c.carnetSalud_VENCIDO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.licenciaConducir_VENCIDO, c.altaBPS
+                e.segAccidenteTrab_FECHAVENCIMIENTO, e.segAccidenteTrab_VENCIDO, e.planillaTrab_DOC, e.planillaTrab_FECHAEMISION
+               
             FROM 
                 fletero f
                 JOIN documentoEmpresaFlete e ON f.idFletero = e.idFletero_DocEmpresa
-                JOIN documentoVehiculo v ON f.idFletero = v.idFlete_Vehiculo
-                JOIN documentoConductor c ON v.idVehiculoFlete = c.idDocVehiculoFlete_Conductor
             WHERE 
                  e.obra = ?;
         `, {
@@ -272,11 +163,6 @@ export const createFleteWithDocuments = async (req, res) => {
         constInscripcionDGI_DOC, constInscripcionBPS_DOC, certDGI_DOC, certDGI_FECHAVENCIMIENTO, certDGI_VENCIDO, 
         certComunBPS_DOC, certComunBPS_FECHAVENCIMIENTO, certComunBPS_VENCIDO, segAccidenteTrab_DOC, 
         segAccidenteTrab_FECHAVENCIMIENTO, segAccidenteTrab_VENCIDO, planillaTrab_DOC, planillaTrab_FECHAEMISION,
-        descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO, 
-        applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC, 
-        soa_FECHAVENCIMIENTO, soa_VENCIDO, nombreApellido, documentoIdentidad_DOC, dni, carnetSalud_DOC, 
-        carnetSalud_FECHAVENCIMIENTO, carnetSalud_VENCIDO, licenciaConducir_DOC, licenciaConducir_FECHAVENCIMIENTO, 
-        licenciaConducir_VENCIDO, altaBPS
     } = req.body;
     
     
@@ -313,38 +199,6 @@ export const createFleteWithDocuments = async (req, res) => {
                 ],
                 transaction: t
             });
-
-            // Crear el documento relacionado con el vehículo
-            const [idVehiculo] = await db.query(`
-            INSERT INTO documentoVehiculo (
-                idFlete_Vehiculo, descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO,
-                applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC, soa_FECHAVENCIMIENTO, soa_VENCIDO
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, {
-            replacements: [
-                idFletero, descripcion || null, libretaCirculacion_DOC || null, cedulaMTOP_DOC || null, 
-                cedulaMTOP_FECHAVENCIMIENTO || null, cedulaMTOP_VENCIDO || null, applus_DOC || null, 
-                applus_FECHAVENCIMIENTO || null, applus_VENCIDO || null, aplus_PRORROGA || null,aplus_PRORROGAVENCIDA || null, soa_DOC || null, soa_FECHAVENCIMIENTO || null, soa_VENCIDO || null
-            ],
-            transaction: t
-        });
-
-            // Crear el documento relacionado con el conductor
-            await db.query(`
-                INSERT INTO documentoConductor (
-                    idDocVehiculoFlete_Conductor, nombreApellido, documentoIdentidad_DOC, dni, carnetSalud_DOC,
-                    carnetSalud_FECHAVENCIMIENTO, carnetSalud_VENCIDO, licenciaConducir_DOC, licenciaConducir_FECHAVENCIMIENTO,
-                    licenciaConducir_VENCIDO, altaBPS
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `, {
-                replacements: [
-                    idVehiculo, nombreApellido || null, documentoIdentidad_DOC || null, dni || null, carnetSalud_DOC || null, 
-                    carnetSalud_FECHAVENCIMIENTO || null, carnetSalud_VENCIDO || null, licenciaConducir_DOC || null, 
-                    licenciaConducir_FECHAVENCIMIENTO || null, licenciaConducir_VENCIDO || null, altaBPS || null
-                ],
-                transaction: t
-            });
-
             res.status(201).json({ msg: "Flete y documentos creados exitosamente" });
         });
     } catch (error) {
@@ -352,20 +206,13 @@ export const createFleteWithDocuments = async (req, res) => {
     }
 };
 
-
-
 export const updateFlete = async (req, res) => {
     const { idFletero } = req.params;
     const {
         razonSocial, obra, condicionContrato_DOC, contactoMail, contactoTel, rut, direccion, departamento,
         constInscripcionDGI_DOC, constInscripcionBPS_DOC, certDGI_DOC, certDGI_FECHAVENCIMIENTO, certDGI_VENCIDO,
         certComunBPS_DOC, certComunBPS_FECHAVENCIMIENTO, certComunBPS_VENCIDO, segAccidenteTrab_DOC,
-        segAccidenteTrab_FECHAVENCIMIENTO, segAccidenteTrab_VENCIDO, planillaTrab_DOC, planillaTrab_FECHAEMISION,
-        descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO,
-        applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC,
-        soa_FECHAVENCIMIENTO, soa_VENCIDO, nombreApellido, documentoIdentidad_DOC, dni, carnetSalud_DOC,
-        carnetSalud_FECHAVENCIMIENTO, carnetSalud_VENCIDO, licenciaConducir_DOC, licenciaConducir_FECHAVENCIMIENTO,
-        licenciaConducir_VENCIDO, altaBPS
+        segAccidenteTrab_FECHAVENCIMIENTO, segAccidenteTrab_VENCIDO, planillaTrab_DOC, planillaTrab_FECHAEMISION
     } = req.body;
 
     try {
@@ -391,47 +238,14 @@ export const updateFlete = async (req, res) => {
                 transaction: t
             });
 
-            // Actualizar el documento relacionado con el vehículo
-            await db.query(`
-                UPDATE documentoVehiculo SET 
-                    descripcion = ?, libretaCirculacion_DOC = ?, cedulaMTOP_DOC = ?, cedulaMTOP_FECHAVENCIMIENTO = ?, cedulaMTOP_VENCIDO = ?,
-                    applus_DOC = ?, applus_FECHAVENCIMIENTO = ?, applus_VENCIDO = ?, aplus_PRORROGA = ?, aplus_PRORROGAVENCIDA = ?,
-                    soa_DOC = ?, soa_FECHAVENCIMIENTO = ?, soa_VENCIDO = ?
-                WHERE idFlete_Vehiculo = ?
-            `, {
-                replacements: [
-                    descripcion || null, libretaCirculacion_DOC || null, cedulaMTOP_DOC || null, cedulaMTOP_FECHAVENCIMIENTO || null,
-                    cedulaMTOP_VENCIDO || null, applus_DOC || null, applus_FECHAVENCIMIENTO || null, applus_VENCIDO || null,
-                    aplus_PRORROGA || null, aplus_PRORROGAVENCIDA || null, soa_DOC || null, soa_FECHAVENCIMIENTO || null,
-                    soa_VENCIDO || null, idFletero
-                ],
-                transaction: t
-            });
-
-            // Actualizar el documento relacionado con el conductor
-            await db.query(`
-                UPDATE documentoConductor SET 
-                    nombreApellido = ?, documentoIdentidad_DOC = ?, dni = ?, carnetSalud_DOC = ?, carnetSalud_FECHAVENCIMIENTO = ?, 
-                    carnetSalud_VENCIDO = ?, licenciaConducir_DOC = ?, licenciaConducir_FECHAVENCIMIENTO = ?, licenciaConducir_VENCIDO = ?, 
-                    altaBPS = ?
-                WHERE idDocVehiculoFlete_Conductor = (
-                    SELECT idVehiculoFlete FROM documentoVehiculo WHERE idFlete_Vehiculo = ?
-                )
-            `, {
-                replacements: [
-                    nombreApellido || null, documentoIdentidad_DOC || null, dni || null, carnetSalud_DOC || null, 
-                    carnetSalud_FECHAVENCIMIENTO || null, carnetSalud_VENCIDO || null, licenciaConducir_DOC || null, 
-                    licenciaConducir_FECHAVENCIMIENTO || null, licenciaConducir_VENCIDO || null, altaBPS || null, idFletero
-                ],
-                transaction: t
-            });
-
             res.status(200).json({ msg: "Flete y documentos actualizados exitosamente" });
         });
     } catch (error) {
         res.status(500).json({ msg: error.message });
     }
 };
+
+
 
 export const deleteFlete = async (req, res) => {
     const { idFletero } = req.params;
@@ -483,3 +297,113 @@ export const deleteFlete = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 };
+
+export const addVehicleToFlete = async (req, res) => {
+    const { idFletero } = req.params;
+    const {
+        descripcion,
+        libretaCirculacion_DOC,
+        cedulaMTOP_DOC,
+        cedulaMTOP_FECHAVENCIMIENTO,
+        cedulaMTOP_VENCIDO,
+        applus_DOC,
+        applus_FECHAVENCIMIENTO,
+        applus_VENCIDO,
+        aplus_PRORROGA,
+        aplus_PRORROGAVENCIDA,
+        soa_DOC,
+        soa_FECHAVENCIMIENTO,
+        soa_VENCIDO
+    } = req.body;
+
+    try {
+        await db.transaction(async (t) => {
+            // Verificar si el flete existe
+            const fleteExistente = await db.query(`
+                SELECT * FROM fletero WHERE idFletero = ? FOR UPDATE
+            `, {
+                replacements: [idFletero],
+                type: QueryTypes.SELECT,
+                transaction: t
+            });
+
+            if (!fleteExistente || fleteExistente.length === 0) {
+                return res.status(404).json({ msg: 'El flete especificado no existe' });
+            }
+
+            // Crear el documento relacionado con el vehículo
+            await db.query(`
+                INSERT INTO documentoVehiculo (
+                    idFlete_Vehiculo, descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO,
+                    applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC, soa_FECHAVENCIMIENTO, soa_VENCIDO
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `, {
+                replacements: [
+                    idFletero, descripcion || null, libretaCirculacion_DOC || null, cedulaMTOP_DOC || null, 
+                    cedulaMTOP_FECHAVENCIMIENTO || null, cedulaMTOP_VENCIDO || null, applus_DOC || null, 
+                    applus_FECHAVENCIMIENTO || null, applus_VENCIDO || null, aplus_PRORROGA || null, 
+                    aplus_PRORROGAVENCIDA || null, soa_DOC || null, soa_FECHAVENCIMIENTO || null, soa_VENCIDO || null
+                ],
+                transaction: t
+            });
+
+            res.status(201).json({ msg: 'Vehículo agregado correctamente' });
+        });
+    } catch (error) {
+        console.error('Error al agregar vehículo:', error);
+        res.status(500).json({ msg: 'Error al agregar el vehículo', error });
+    }
+};
+export const deleteVehiculo = async (req, res) => {
+    const { idVehiculoFlete } = req.params; // Obtener el id del vehículo a eliminar
+
+    let transaction; // Variable para la transacción
+
+    try {
+        // Iniciar una transacción
+        transaction = await db.transaction();
+
+        // Verificar si el vehículo existe antes de eliminarlo
+        const vehiculo = await db.query(
+            `SELECT * FROM documentoVehiculo WHERE idFlete_Vehiculo = ? FOR UPDATE`,
+            {
+                replacements: [idVehiculoFlete],
+                transaction,
+                type: QueryTypes.SELECT,
+            }
+        );
+
+        if (!vehiculo) {
+            throw new Error("No se encontró el vehículo o ya fue eliminado");
+        }
+
+        // Realizar la eliminación del vehículo
+        await db.query(
+            `DELETE FROM documentoVehiculo WHERE idFlete_Vehiculo = ?`,
+            {
+                replacements: [idVehiculoFlete],
+                transaction,
+            }
+        );
+
+        // Confirmar la transacción
+        await transaction.commit();
+
+        // Responder con éxito
+        res.status(200).json({ msg: "Vehículo eliminado exitosamente" });
+
+    } catch (error) {
+        // Revertir la transacción en caso de error
+        console.error('Error al eliminar vehículo:', error);
+        if (transaction) {
+            await transaction.rollback();
+        }
+
+        // Manejar el error
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+
+
+
