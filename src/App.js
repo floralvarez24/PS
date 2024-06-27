@@ -7,6 +7,9 @@ import AddUser from "./pages/AddUser";
 import EditUser from "./pages/EditUser";
 import AddFlete from "./pages/AddFlete";
 import EditFlete from "./pages/EditFlete";
+import AddVehiculo from "./pages/AddVehiculo";
+import EditVehiculo from "./pages/EditVehiculo";
+
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
         <Route path="/fletes/edit/:id" element={<EditFlete />} />
         <Route path="/users/add" element={<AddUser />} />
         <Route path="/users/edit/:id" element={<EditUser />} />
+        <Route path="/vehiculos/add" element={<AddVehiculo />} />
+        <Route path="/vehiculos/edit/:id" element={<EditVehiculo />} />
+
       </Routes>     
       </BrowserRouter>
     </div>

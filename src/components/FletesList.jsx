@@ -85,6 +85,8 @@ const FletesList = () => {
     }
 
     const deleteFlete = async (idFletero) => {
+        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este flete?");
+        if (confirmDelete) {
         try {
             await axios.delete(`http://localhost:3001/eliminar-flete/${idFletero}`);
             getFletes(); // Después de eliminar, volver a obtener los fletes actualizados
@@ -92,6 +94,7 @@ const FletesList = () => {
             console.error('Error al eliminar flete:', error);
         }
     }
+}
 
     return (
         <div className='has-background-light'>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import VehiculosList from './VehiculosList';
 
 const FormEditFlete = () => {
 
@@ -200,6 +201,7 @@ const FormEditFlete = () => {
                             <input type="date" className="input has-background-white has-text-black custom-input" value={planillaTrab_FECHAEMISION} onChange={(e) => setPlanillaTrab_FECHAEMISION (e.target.value)}/>
                         </div>
                     </div>
+                    <VehiculosList />
                     <div className="field">
                         <div className="control">
                         <button className="button is-success" type="sumbit" style={{ backgroundColor: "#183e6e", color: "white", marginRight: "10px" }}> Actualizar </button>
