@@ -114,15 +114,31 @@ Content-Type: application/json
 }
 ###
 //Crear vehiculo
-POST http://localhost:3001/flete/73/vehiculo
+POST http://localhost:3001/flete/74/vehiculo
 Content-Type: application/json
 
 {
-    "descripcion": "descripcionVehiculo73prueba"
+    "descripcion": "descripcionVehiculo74prueba2"
 }
 ###
 //Eliminar vehiculo por ID
-DELETE  http://localhost:3001/eliminar-vehiculo/73
+DELETE  http://localhost:3001/eliminar-vehiculo/26
+
+###
+//Pedir vehiculos de un flete
+GET http://localhost:3001/flete/71/vehiculos
+
+
+###
+//Modificar vehiculo por id
+PATCH http://localhost:3001/flete/modificar-vehiculo/23
+Content-Type: application/json
+
+{
+    "descripcion": "descripcion edit"
+}
+
+
 ###
 //Modificar flete por id
 PATCH  http://localhost:3001/modificar-flete/60

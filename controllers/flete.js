@@ -354,6 +354,89 @@ export const addVehicleToFlete = async (req, res) => {
         res.status(500).json({ msg: 'Error al agregar el vehículo', error });
     }
 };
+
+
+export const getVehiculosByFlete = async (req, res) => {
+    const { idFlete_Vehiculo } = req.params;
+    
+    try {
+        const [results] = await db.query(`
+            SELECT 
+                v.idVehiculoFlete, v.descripcion, v.libretaCirculacion_DOC, 
+                v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
+                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, 
+                v.aplus_PRORROGAVENCIDA, v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO
+            FROM 
+                documentoVehiculo v
+            WHERE 
+                v.idFlete_Vehiculo = ?;
+        `, {
+            replacements: [idFlete_Vehiculo]
+        });
+
+        if (results.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron vehículos para este flete' });
+        }
+
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+export const updateVehiculoById = async (req, res) => {
+    const { idVehiculoFlete } = req.params;
+    const {
+        descripcion,
+        libretaCirculacion_DOC,
+        cedulaMTOP_DOC,
+        cedulaMTOP_FECHAVENCIMIENTO,
+        applus_DOC,
+        applus_FECHAVENCIMIENTO,
+        aplus_PRORROGA,
+        soa_DOC,
+        soa_FECHAVENCIMIENTO
+    } = req.body;
+
+    try {
+        // Iniciar una transacción
+        await db.transaction(async (t) => {
+            // Actualizar el documento del vehículo
+            await db.query(`
+                UPDATE documentoVehiculo SET 
+                    descripcion = ?, 
+                    libretaCirculacion_DOC = ?, 
+                    cedulaMTOP_DOC = ?, 
+                    cedulaMTOP_FECHAVENCIMIENTO = ?, 
+                    applus_DOC = ?, 
+                    applus_FECHAVENCIMIENTO = ?, 
+                    aplus_PRORROGA = ?, 
+                    soa_DOC = ?, 
+                    soa_FECHAVENCIMIENTO = ?
+                WHERE idVehiculoFlete = ?
+            `, {
+                replacements: [
+                    descripcion || null,
+                    libretaCirculacion_DOC || null,
+                    cedulaMTOP_DOC || null,
+                    cedulaMTOP_FECHAVENCIMIENTO || null,
+                    applus_DOC || null,
+                    applus_FECHAVENCIMIENTO || null,
+                    aplus_PRORROGA || null,
+                    soa_DOC || null,
+                    soa_FECHAVENCIMIENTO || null,
+                    idVehiculoFlete
+                ],
+                transaction: t
+            });
+
+            res.status(200).json({ msg: "Vehículo actualizado exitosamente" });
+        });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+
 export const deleteVehiculo = async (req, res) => {
     const { idVehiculoFlete } = req.params; // Obtener el id del vehículo a eliminar
 
@@ -365,7 +448,7 @@ export const deleteVehiculo = async (req, res) => {
 
         // Verificar si el vehículo existe antes de eliminarlo
         const vehiculo = await db.query(
-            `SELECT * FROM documentoVehiculo WHERE idFlete_Vehiculo = ? FOR UPDATE`,
+            `SELECT * FROM documentoVehiculo WHERE idVehiculoFlete = ? FOR UPDATE`,
             {
                 replacements: [idVehiculoFlete],
                 transaction,
@@ -373,13 +456,13 @@ export const deleteVehiculo = async (req, res) => {
             }
         );
 
-        if (!vehiculo) {
+        if (vehiculo.length === 0) {
             throw new Error("No se encontró el vehículo o ya fue eliminado");
         }
 
         // Realizar la eliminación del vehículo
         await db.query(
-            `DELETE FROM documentoVehiculo WHERE idFlete_Vehiculo = ?`,
+            `DELETE FROM documentoVehiculo WHERE idVehiculoFlete = ?`,
             {
                 replacements: [idVehiculoFlete],
                 transaction,
@@ -403,6 +486,7 @@ export const deleteVehiculo = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 };
+
 
 
 
