@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 
+
 const FormEditVehiculo = () => {
     const [descripcion, setDescripcion] = useState('');
     const [libretaCirculacion_DOC, setLibretaCirculacion_DOC] = useState('');
@@ -13,13 +14,14 @@ const FormEditVehiculo = () => {
     const [soa_DOC, setSoa_DOC] = useState('');
     const [soa_FECHAVENCIMIENTO, setSoa_FECHAVENCIMIENTO] = useState('');
     const [msg, setMsg] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
-    const { idFletero } = useParams();
+    const { id } = useParams();
 
     useEffect(() => {
-        const getFleteById = async () => {
+        const getVehiculoById = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/pedir-flete2/${idFletero}`);
+                const response = await axios.get(`http://localhost:3001/flete/pedir-vehiculo/${id}`);
                 setDescripcion(response.data.descripcion);
                 setLibretaCirculacion_DOC(response.data.libretaCirculacion_DOC);
                 setCedulaMTOP_DOC(response.data.cedulaMTOP_DOC);
@@ -37,13 +39,13 @@ const FormEditVehiculo = () => {
                 }
             }
         };
-        getFleteById();
-    }, [idFletero]);
+        getVehiculoById();
+    }, [id]);
 
-    const updateFlete = async (e) => {
+    const updateVehiculo = async (e) => {
         e.preventDefault();
         try {
-            await axios.patch(`http://localhost:3001/modificar-flete/${idFletero}`, {
+            await axios.patch(`http://localhost:3001/flete/modificar-vehiculo/${id}`, {
                 descripcion,
                 libretaCirculacion_DOC,
                 cedulaMTOP_DOC,
@@ -54,7 +56,7 @@ const FormEditVehiculo = () => {
                 soa_DOC,
                 soa_FECHAVENCIMIENTO
             });
-            navigate('/fletes');
+            setShowModal(true);
         } catch (error) {
             if (error.response) {
                 setMsg(`Error: ${error.response.data.msg}`);
@@ -64,6 +66,11 @@ const FormEditVehiculo = () => {
         }
     }
 
+    const closeModal = () => {
+        setShowModal(false);
+       
+    }
+
     return (
         <div>
             <h1 className="title" style={{color:"black"}}> Vehículos </h1>
@@ -71,7 +78,7 @@ const FormEditVehiculo = () => {
             <div className="card is-shadowless has-background-light">
                 <div className="card-content">
                     <div className="content">
-                        <form onSubmit={updateFlete}>
+                        <form onSubmit={updateVehiculo}>
                             <p className='has-text-centered'>{msg}</p>
                             <div className="field">
                                 <label className="label" style={{color:"black"}}> Descripción </label>
@@ -137,8 +144,21 @@ const FormEditVehiculo = () => {
                     </div>
                 </div>
             </div>
+            <div className={`modal ${showModal ? 'is-active' : ''}`}>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                        <p className="modal-card-title">Cambios guardados</p>
+                        <button className="delete" aria-label="close" onClick={closeModal}></button>
+                    </header>
+                    <section className="modal-card-body">
+                        <p>Los cambios se han guardado exitosamente.</p>
+                    </section>
+                </div>
+            </div>
         </div>
     )
 }
 
 export default FormEditVehiculo;
+

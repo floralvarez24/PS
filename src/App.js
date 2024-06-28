@@ -24,7 +24,7 @@ function App() {
         <Route path="/fletes/edit/:id" element={<EditFlete />} />
         <Route path="/users/add" element={<AddUser />} />
         <Route path="/users/edit/:id" element={<EditUser />} />
-        <Route path="/vehiculos/add" element={<AddVehiculo />} />
+        <Route path="/vehiculos/add/:id" element={<AddVehiculo />} />
         <Route path="/vehiculos/edit/:id" element={<EditVehiculo />} />
 
       </Routes>     
