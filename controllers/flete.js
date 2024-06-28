@@ -199,7 +199,7 @@ export const createFleteWithDocuments = async (req, res) => {
                 ],
                 transaction: t
             });
-            res.status(201).json({ msg: "Flete y documentos creados exitosamente" });
+            res.status(201).json({ id: idFletero, msg: "Flete creado exitosamente" });
         });
     } catch (error) {
         res.status(500).json({ msg: error.message });
@@ -356,6 +356,7 @@ export const addVehicleToFlete = async (req, res) => {
 };
 
 
+
 export const getVehiculosByFlete = async (req, res) => {
     const { idFlete_Vehiculo } = req.params;
     
@@ -383,6 +384,36 @@ export const getVehiculosByFlete = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 };
+
+export const getVehiculoById = async (req, res) => {
+    const { idVehiculoFlete } = req.params;
+
+    try {
+        const [results] = await db.query(`
+            SELECT 
+                v.idVehiculoFlete, v.descripcion, v.libretaCirculacion_DOC, 
+                v.cedulaMTOP_DOC, v.cedulaMTOP_FECHAVENCIMIENTO, v.cedulaMTOP_VENCIDO,
+                v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, 
+                v.aplus_PRORROGAVENCIDA, v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO
+            FROM 
+                documentovehiculo v
+            WHERE 
+                v.idVehiculoFlete = ?;
+        `, {
+            replacements: [idVehiculoFlete]
+        });
+
+        if (results.length === 0) {
+            return res.status(404).json({ msg: 'No se encontró el vehículo especificado' });
+        }
+
+        res.json(results[0]); // Devuelve solo el primer resultado (debería ser único por el ID)
+    } catch (error) {
+        console.error('Error al obtener vehículo por ID:', error);
+        res.status(500).json({ msg: 'Error al obtener el vehículo por ID', error });
+    }
+};
+
 export const updateVehiculoById = async (req, res) => {
     const { idVehiculoFlete } = req.params;
     const {
