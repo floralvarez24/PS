@@ -114,19 +114,19 @@ Content-Type: application/json
 }
 ###
 //Crear vehiculo
-POST http://localhost:3001/flete/74/vehiculo
+POST http://localhost:3001/flete/73/vehiculo
 Content-Type: application/json
 
 {
-    "descripcion": "descripcionVehiculo74prueba2"
+    "descripcion": "descripcionVehiculo73prueba2"
 }
 ###
 //Eliminar vehiculo por ID
-DELETE  http://localhost:3001/eliminar-vehiculo/26
+DELETE  http://localhost:3001/eliminar-vehiculo/78
 
 ###
 //Pedir vehiculos de un flete
-GET http://localhost:3001/flete/71/vehiculos
+GET http://localhost:3001/flete/74/vehiculos
 
 
 ###
@@ -153,9 +153,37 @@ Content-Type: application/json
 
 ###
 //Eliminar flete por ID
-DELETE  http://localhost:3001/eliminar-flete/15
+DELETE  http://localhost:3001/eliminar-flete/71
 
+###
+//Crear conductor
+POST http://localhost:3001/flete/79/conductor
+Content-Type: application/json
 
+{
+    "nombreApellido": "Nombre y apellido prueba2",
+    "dni": "123"
+}
+
+###
+//Pedir conductores de un vehiculo
+GET http://localhost:3001/flete/78/conductores
+
+###
+//Pedir conductor por id
+GET http://localhost:3001/flete/pedir-conductor/42
+###
+//Modificar conductor por id
+PATCH http://localhost:3001/flete/modificar-conductor/42
+Content-Type: application/json
+
+{
+    "nombreApellido": "Nombre y apellido modificado",
+    "dni": "123"
+}
+###
+//Eliminar conductor por ID
+DELETE  http://localhost:3001/eliminar-conductor/40
 
 ###
 //Pedir subContrato

@@ -12,7 +12,12 @@ import {
     addVehicleToFlete,
     getVehiculosByFlete,
     updateVehiculoById,
-    getVehiculoById
+    getVehiculoById,
+    addConductorToVehiculo,
+    getConductorByVehiculo,
+    updateConductorById,
+    getConductorById,
+    deleteConductor
 } from "../controllers/flete.js";
 import { verifyUser } from "../middleware/AuthUser.js";
 
@@ -31,6 +36,12 @@ router.post('/flete/:idFletero/vehiculo', verifyUser, addVehicleToFlete);
 router.get('/flete/:idFlete_Vehiculo/vehiculos',verifyUser, getVehiculosByFlete);
 router.get('/flete/pedir-vehiculo/:idVehiculoFlete',verifyUser, getVehiculoById);
 router.patch('/flete/modificar-vehiculo/:idVehiculoFlete', verifyUser,updateVehiculoById);
+router.post('/flete/:idVehiculoFlete/conductor', verifyUser, addConductorToVehiculo);
+router.get('/flete/:idDocVehiculoFlete_Conductor/conductores',verifyUser, getConductorByVehiculo);
+router.get('/flete/pedir-conductor/:idDocConductorFlete',verifyUser, getConductorById);
+router.patch('/flete/modificar-conductor/:idDocConductorFlete', verifyUser,updateConductorById);
+router.delete('/eliminar-conductor/:idDocConductorFlete',verifyUser, deleteConductor);
+
 
 
 export default router;

@@ -297,7 +297,7 @@ export const deleteFlete = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 };
-
+//metodos para vehiculos
 export const addVehicleToFlete = async (req, res) => {
     const { idFletero } = req.params;
     const {
@@ -332,7 +332,7 @@ export const addVehicleToFlete = async (req, res) => {
             }
 
             // Crear el documento relacionado con el vehículo
-            await db.query(`
+            const [idVehiculoFlete] = await db.query(`
                 INSERT INTO documentoVehiculo (
                     idFlete_Vehiculo, descripcion, libretaCirculacion_DOC, cedulaMTOP_DOC, cedulaMTOP_FECHAVENCIMIENTO, cedulaMTOP_VENCIDO,
                     applus_DOC, applus_FECHAVENCIMIENTO, applus_VENCIDO, aplus_PRORROGA, aplus_PRORROGAVENCIDA, soa_DOC, soa_FECHAVENCIMIENTO, soa_VENCIDO
@@ -347,7 +347,7 @@ export const addVehicleToFlete = async (req, res) => {
                 transaction: t
             });
 
-            res.status(201).json({ msg: 'Vehículo agregado correctamente' });
+            res.status(201).json({ idVehiculoFlete, msg: 'Vehículo agregado correctamente'});
         });
     } catch (error) {
         console.error('Error al agregar vehículo:', error);
@@ -368,7 +368,7 @@ export const getVehiculosByFlete = async (req, res) => {
                 v.applus_DOC, v.applus_FECHAVENCIMIENTO, v.applus_VENCIDO, v.aplus_PRORROGA, 
                 v.aplus_PRORROGAVENCIDA, v.soa_DOC, v.soa_FECHAVENCIMIENTO, v.soa_VENCIDO
             FROM 
-                documentoVehiculo v
+                documentovehiculo v
             WHERE 
                 v.idFlete_Vehiculo = ?;
         `, {
@@ -413,6 +413,7 @@ export const getVehiculoById = async (req, res) => {
         res.status(500).json({ msg: 'Error al obtener el vehículo por ID', error });
     }
 };
+
 
 export const updateVehiculoById = async (req, res) => {
     const { idVehiculoFlete } = req.params;
@@ -490,7 +491,25 @@ export const deleteVehiculo = async (req, res) => {
         if (vehiculo.length === 0) {
             throw new Error("No se encontró el vehículo o ya fue eliminado");
         }
+             // Eliminar los documentos del conductor asociados al flete
+        await db.query(`
+         DELETE FROM documentoConductor
+            WHERE idDocVehiculoFlete_Conductor IN (
+            SELECT idVehiculoFlete FROM documentoVehiculo WHERE idFlete_Vehiculo = ?
+        )
+        `, {
+         replacements: [idVehiculoFlete],
+         transaction,
+        });
 
+        // Eliminar todos los conductores asociados al vehículo
+        await db.query(
+            `DELETE FROM documentoConductor WHERE idDocVehiculoFlete_Conductor = ?`,
+            {
+                replacements: [idVehiculoFlete],
+                transaction,
+            }
+        );
         // Realizar la eliminación del vehículo
         await db.query(
             `DELETE FROM documentoVehiculo WHERE idVehiculoFlete = ?`,
@@ -518,7 +537,203 @@ export const deleteVehiculo = async (req, res) => {
     }
 };
 
+//metodos para conductores
+export const addConductorToVehiculo = async (req, res) => {
+    const { idVehiculoFlete } = req.params;
+    const {
+       nombreApellido,
+       documentoIdentidad_DOC,
+       dni,
+       carnetSalud_DOC,
+        carnetSalud_FECHAVENCIMIENTO,
+        licenciaConducir_DOC,
+        licenciaConducir_FECHAVENCIMIENTO,
+        altaBPS
 
+    } = req.body;
 
+    try {
+        await db.transaction(async (t) => {
+            // Verificar si el vehiculo existe
+            const vehiculoExistente = await db.query(`
+                SELECT * FROM documentoVehiculo WHERE idVehiculoFlete = ? FOR UPDATE
+            `, {
+                replacements: [idVehiculoFlete],
+                type: QueryTypes.SELECT,
+                transaction: t
+            });
+
+            if (!vehiculoExistente || vehiculoExistente.length === 0) {
+                return res.status(404).json({ msg: 'El vehiculo especificado no existe' });
+            }
+
+            // Crear el documento relacionado con el conductor
+            await db.query(`
+                INSERT INTO documentoconductor (
+                    idDocVehiculoFlete_Conductor, nombreApellido, documentoIdentidad_DOC, dni, carnetSalud_DOC, carnetSalud_FECHAVENCIMIENTO, licenciaConducir_DOC, licenciaConducir_FECHAVENCIMIENTO, altaBPS
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `, {
+                replacements: [
+                    idVehiculoFlete, nombreApellido || null, documentoIdentidad_DOC || null, dni || null, carnetSalud_DOC || null, carnetSalud_FECHAVENCIMIENTO || null, licenciaConducir_DOC || null, licenciaConducir_FECHAVENCIMIENTO || null, altaBPS || null
+                ],
+                transaction: t
+            });
+
+            res.status(201).json({ msg: 'Conductor agregado correctamente' });
+        });
+    } catch (error) {
+        console.error('Error al agregar conductor:', error);
+        res.status(500).json({ msg: 'Error al agregar el conductor', error });
+    }
+};
+
+export const getConductorByVehiculo = async (req, res) => {
+    const { idDocVehiculoFlete_Conductor } = req.params;
+    
+    try {
+        const [results] = await db.query(`
+            SELECT 
+                c.idDocVehiculoFlete_Conductor, c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.altaBPS
+            FROM 
+                documentoconductor c
+            WHERE 
+                c.idDocVehiculoFlete_Conductor = ?;
+        `, {
+            replacements: [idDocVehiculoFlete_Conductor]
+        });
+
+        if (results.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron conductores para este vehiculo' });
+        }
+
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+export const getConductorById = async (req, res) => {
+    const { idDocConductorFlete } = req.params;
+
+    try {
+        const [results] = await db.query(`
+            SELECT 
+                c.idDocConductorFlete, c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.altaBPS
+            FROM 
+                documentoconductor c
+            WHERE 
+                c.idDocConductorFlete = ?;
+        `, {
+            replacements: [idDocConductorFlete]
+        });
+
+        if (results.length === 0) {
+            return res.status(404).json({ msg: 'No se encontró el conductor especificado' });
+        }
+
+        res.json(results[0]); // Devuelve solo el primer resultado (debería ser único por el ID)
+    } catch (error) {
+        console.error('Error al obtener conductor por ID:', error);
+        res.status(500).json({ msg: 'Error al obtener el conductor por ID', error });
+    }
+};
+export const updateConductorById = async (req, res) => {
+    const { idDocConductorFlete } = req.params;
+    const {
+        nombreApellido,
+        documentoIdentidad_DOC,
+        dni,
+        carnetSalud_DOC,
+        carnetSalud_FECHAVENCIMIENTO,
+        licenciaConducir_DOC,
+        licenciaConducir_FECHAVENCIMIENTO,
+        altaBPS
+    } = req.body;
+
+    try {
+        // Iniciar una transacción
+        await db.transaction(async (t) => {
+            // Actualizar el documento del conductor
+            await db.query(`
+                UPDATE documentoconductor SET 
+                    nombreApellido = ?, 
+                    documentoIdentidad_DOC = ?, 
+                    dni = ?, 
+                    carnetSalud_DOC = ?, 
+                    carnetSalud_FECHAVENCIMIENTO = ?, 
+                    licenciaConducir_DOC = ?, 
+                    licenciaConducir_FECHAVENCIMIENTO = ?, 
+                    altaBPS = ?
+                WHERE idDocConductorFlete = ?
+            `, {
+                replacements: [
+                    nombreApellido || null,
+                    documentoIdentidad_DOC || null,
+                    dni || null,
+                    carnetSalud_DOC || null,
+                    carnetSalud_FECHAVENCIMIENTO || null,
+                    licenciaConducir_DOC || null,
+                    licenciaConducir_FECHAVENCIMIENTO || null,
+                    altaBPS || null,
+                    idDocConductorFlete
+                ],
+                transaction: t
+            });
+
+            res.status(200).json({ msg: "Conductor actualizado exitosamente" });
+        });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+export const deleteConductor = async (req, res) => {
+    const { idDocConductorFlete } = req.params; // Obtener el id del vehículo a eliminar
+
+    let transaction; // Variable para la transacción
+
+    try {
+        // Iniciar una transacción
+        transaction = await db.transaction();
+
+        // Verificar si el conductor existe antes de eliminarlo
+        const vehiculo = await db.query(
+            `SELECT * FROM documentoconductor WHERE idDocConductorFlete = ? FOR UPDATE`,
+            {
+                replacements: [idDocConductorFlete],
+                transaction,
+                type: QueryTypes.SELECT,
+            }
+        );
+
+        if (vehiculo.length === 0) {
+            throw new Error("No se encontró el conductor o ya fue eliminado");
+        }
+
+        // Realizar la eliminación del conductor
+        await db.query(
+            `DELETE FROM documentoconductor WHERE idDocConductorFlete = ?`,
+            {
+                replacements: [idDocConductorFlete],
+                transaction,
+            }
+        );
+
+        // Confirmar la transacción
+        await transaction.commit();
+
+        // Responder con éxito
+        res.status(200).json({ msg: "Conductor eliminado exitosamente" });
+
+    } catch (error) {
+        // Revertir la transacción en caso de error
+        console.error('Error al eliminar conductor:', error);
+        if (transaction) {
+            await transaction.rollback();
+        }
+
+        // Manejar el error
+        res.status(500).json({ msg: error.message });
+    }
+};
 
 
