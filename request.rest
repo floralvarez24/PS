@@ -174,7 +174,7 @@ GET http://localhost:3001/flete/78/conductores
 GET http://localhost:3001/flete/pedir-conductor/42
 ###
 //Modificar conductor por id
-PATCH http://localhost:3001/flete/modificar-conductor/42
+PATCH http://localhost:3001/flete/modificar-conductor/57
 Content-Type: application/json
 
 {
@@ -183,7 +183,7 @@ Content-Type: application/json
 }
 ###
 //Eliminar conductor por ID
-DELETE  http://localhost:3001/eliminar-conductor/40
+DELETE  http://localhost:3001/eliminar-conductor/48
 
 ###
 //Pedir subContrato

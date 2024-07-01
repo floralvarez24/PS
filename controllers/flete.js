@@ -593,6 +593,7 @@ export const getConductorByVehiculo = async (req, res) => {
     try {
         const [results] = await db.query(`
             SELECT 
+                c.idDocConductorFlete,
                 c.idDocVehiculoFlete_Conductor, c.nombreApellido, c.documentoIdentidad_DOC, c.dni, c.carnetSalud_DOC, c.carnetSalud_FECHAVENCIMIENTO, c.licenciaConducir_DOC, c.licenciaConducir_FECHAVENCIMIENTO, c.altaBPS
             FROM 
                 documentoconductor c
@@ -686,7 +687,7 @@ export const updateConductorById = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 };
-export const deleteConductor = async (req, res) => {
+/*export const deleteConductor = async (req, res) => {
     const { idDocConductorFlete } = req.params; // Obtener el id del vehículo a eliminar
 
     let transaction; // Variable para la transacción
@@ -734,6 +735,49 @@ export const deleteConductor = async (req, res) => {
         // Manejar el error
         res.status(500).json({ msg: error.message });
     }
+};*/
+
+
+export const deleteConductor = async (req, res) => {
+    const { idDocConductorFlete } = req.params;
+
+    let transaction;
+
+    try {
+        transaction = await db.transaction();
+
+        const conductor = await db.query(
+            `SELECT * FROM documentoconductor WHERE idDocConductorFlete = ? FOR UPDATE`,
+            {
+                replacements: [idDocConductorFlete],
+                transaction,
+                type: QueryTypes.SELECT,
+            }
+        );
+
+        if (conductor.length === 0) {
+            throw new Error("No se encontró el conductor o ya fue eliminado");
+        }
+
+        await db.query(
+            `DELETE FROM documentoconductor WHERE idDocConductorFlete = ?`,
+            {
+                replacements: [idDocConductorFlete],
+                transaction,
+            }
+        );
+
+        await transaction.commit();
+
+        res.status(200).json({ msg: "Conductor eliminado exitosamente" });
+    } catch (error) {
+        console.error('Error al eliminar conductor:', error);
+        if (transaction) {
+            await transaction.rollback();
+        }
+        res.status(500).json({ msg: error.message });
+    }
 };
+
 
 
