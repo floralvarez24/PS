@@ -38,7 +38,7 @@ const FormAddVehiculo = () => {
                 soa_FECHAVENCIMIENTO
             });
             setShowModal(true);
-            setNewVehiculoId(response.data.id); // Guardar el ID del nuevo vehículo
+            setNewVehiculoId(response.data.idVehiculoFlete); // Guardar el ID del nuevo vehículo
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);

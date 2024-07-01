@@ -44,7 +44,7 @@ const VehiculosList = () => {
     return (
         <div className='has-background-light'>
             <h1 className="title" style={{ color: "black" }}> Vehículos </h1>
-            <h2 className="subtitle" style={{ color: "black" }}> Lista de Vehículos </h2>
+            <h2 className="subtitle" style={{ color: "black" }}> Lista de Vehículos de este flete </h2>
             <Link to={`/vehiculos/add/${id}`} style={{ backgroundColor: "#183e6e", color: "white" }} className='button is-primary mb-2 ml-2'> Agregar nuevo </Link>
             <table className='table is-striped is-fullwidth has-background-light' style={{ tableLayout: "auto" }}>
                 <thead>
