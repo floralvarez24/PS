@@ -9,6 +9,8 @@ import AddFlete from "./pages/AddFlete";
 import EditFlete from "./pages/EditFlete";
 import AddVehiculo from "./pages/AddVehiculo";
 import EditVehiculo from "./pages/EditVehiculo";
+import AddConductor from "./pages/AddConductor";
+import EditConductor from "./pages/EditConductor";
 
 
 function App() {
@@ -26,6 +28,10 @@ function App() {
         <Route path="/users/edit/:id" element={<EditUser />} />
         <Route path="/vehiculos/add/:id" element={<AddVehiculo />} />
         <Route path="/vehiculos/edit/:id" element={<EditVehiculo />} />
+        <Route path="/conductores/add/:id" element={<AddConductor />} />
+        <Route path="/conductores/edit/:id" element={<EditConductor />} />
+
+
 
       </Routes>     
       </BrowserRouter>

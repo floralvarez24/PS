@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, Link, useParams } from 'react-router-dom';
-
+import { useNavigate, useParams } from 'react-router-dom';
+import ConductoresList from './ConductoresList';
 
 const FormEditVehiculo = () => {
     const [descripcion, setDescripcion] = useState('');
@@ -68,7 +68,10 @@ const FormEditVehiculo = () => {
 
     const closeModal = () => {
         setShowModal(false);
-       
+    }
+
+    const cancelEdit = () => {
+        navigate(-1); // Navega de regreso a la página anterior
     }
 
     return (
@@ -137,7 +140,9 @@ const FormEditVehiculo = () => {
                             <div className="field">
                                 <div className="control">
                                     <button className="button is-success" type="submit" style={{ backgroundColor: "#183e6e", color: "white", marginRight: "10px" }}> Actualizar </button>
-                                    <button className="button is-success" style={{ backgroundColor: "#183e6e", color: "white" }}> <Link to="/fletes/add"> Cancelar </Link></button>
+                                    <button className="button is-success" type="button" style={{ backgroundColor: "#183e6e", color: "white" }} onClick={cancelEdit}>
+                                        Cancelar
+                                    </button>
                                 </div>      
                             </div>
                         </form>
@@ -156,9 +161,9 @@ const FormEditVehiculo = () => {
                     </section>
                 </div>
             </div>
+            <ConductoresList />
         </div>
     )
 }
 
 export default FormEditVehiculo;
-

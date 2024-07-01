@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import ConductoresList from './ConductoresList';
 
 const FormAddVehiculo = () => {
     const [descripcion, setDescripcion] = useState('');
@@ -18,36 +19,43 @@ const FormAddVehiculo = () => {
     const [soa_VENCIDO, setSoa_VENCIDO] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [msg, setMsg] = useState('');
+    const [newVehiculoId, setNewVehiculoId] = useState('');
     const navigate = useNavigate();
     const { id } = useParams();
 
     const saveVehiculo = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`http://localhost:3001/flete/${id}/vehiculo`, {
-             descripcion: descripcion,
-             libretaCirculacion_DOC: libretaCirculacion_DOC,
-                cedulaMTOP_DOC: cedulaMTOP_DOC,
-                cedulaMTOP_FECHAVENCIMIENTO: cedulaMTOP_FECHAVENCIMIENTO,
-                applus_DOC: applus_DOC,
-                applus_FECHAVENCIMIENTO: applus_FECHAVENCIMIENTO,
-                aplus_PRORROGA: aplus_PRORROGA,
-                soa_DOC: soa_DOC,
-                soa_FECHAVENCIMIENTO: soa_FECHAVENCIMIENTO
-
+            const response = await axios.post(`http://localhost:3001/flete/${id}/vehiculo`, {
+                descripcion,
+                libretaCirculacion_DOC,
+                cedulaMTOP_DOC,
+                cedulaMTOP_FECHAVENCIMIENTO,
+                applus_DOC,
+                applus_FECHAVENCIMIENTO,
+                aplus_PRORROGA,
+                soa_DOC,
+                soa_FECHAVENCIMIENTO
             });
-            setShowModal(true); 
+            setShowModal(true);
+            setNewVehiculoId(response.data.id); // Guardar el ID del nuevo vehículo
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);
             }
         }
     }
+    
     const closeModal = () => {
         setShowModal(false);
-        navigate(`/fletes/edit/${id}`);
     };
-
+    
+    useEffect(() => {
+        if (!showModal && newVehiculoId) {
+            navigate(`/vehiculos/edit/${newVehiculoId}`); // Navegar a la página de edición del vehículo con el ID recién creado
+        }
+    }, [showModal, newVehiculoId]);
+    
     return (
         <div>
             <h1 className="title" style={{ color: "black" }}> Vehículos </h1>
@@ -113,7 +121,7 @@ const FormAddVehiculo = () => {
                             </div>
                             <div className="field">
                                 <button className="button is-primary" type="submit" style={{ backgroundColor: "#183e6e", color: "white", marginRight: "10px" }}>Guardar</button>
-                                <Link to={`/fletes/edit/${id}`} className="button is-light ml-2" style={{ backgroundColor: "#183e6e", color: "white", marginRight: "10px" }}>Cancelar</Link>
+                                <button className="button is-light ml-2" onClick={closeModal} style={{ backgroundColor: "#183e6e", color: "white", marginRight: "10px" }}>Cancelar</button>
                             </div>
                         </form>
                     </div>
@@ -131,6 +139,7 @@ const FormAddVehiculo = () => {
                     </section>
                 </div>
             </div>
+            <ConductoresList />
         </div>
     );
 };
